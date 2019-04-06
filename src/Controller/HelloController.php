@@ -10,9 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class HelloWorldController.
+ * Class HelloController.
  */
-class HelloWorldController extends AbstractController
+class HelloController extends AbstractController
 {
     /**
      * Index action.
@@ -22,7 +22,7 @@ class HelloWorldController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response HTTP response
      *
      * @Route(
-     *     "/{name}",
+     *     "/hello/{name}",
      *     defaults={"name":"World"},
      *     requirements={"name": "[a-zA-Z]+"},
      * )
