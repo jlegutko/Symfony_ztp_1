@@ -59,43 +59,16 @@ class __TwigTemplate_22d445499d0318cf21b298e50cb0008136f57c6904e1359547f236d608c
 <div class=\"container-fluid\">
     ";
         // line 12
-        $context['_parent'] = $context;
-        $context['_seq'] = twig_ensure_traversable(twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, twig_get_attribute($this->env, $this->source, (isset($context["app"]) || array_key_exists("app", $context) ? $context["app"] : (function () { throw new RuntimeError('Variable "app" does not exist.', 12, $this->source); })()), "session", []), "flashBag", []), "all", []));
-        foreach ($context['_seq'] as $context["type"] => $context["messages"]) {
-            // line 13
-            echo "        ";
-            $context['_parent'] = $context;
-            $context['_seq'] = twig_ensure_traversable($context["messages"]);
-            foreach ($context['_seq'] as $context["_key"] => $context["message"]) {
-                // line 14
-                echo "            <div class=\"alert alert-";
-                echo twig_escape_filter($this->env, $context["type"], "html", null, true);
-                echo "\" role=\"alert\">
-                ";
-                // line 15
-                echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans($context["message"]), "html", null, true);
-                echo "
-            </div>
-        ";
-            }
-            $_parent = $context['_parent'];
-            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['message'], $context['_parent'], $context['loop']);
-            $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 18
-            echo "    ";
-        }
-        $_parent = $context['_parent'];
-        unset($context['_seq'], $context['_iterated'], $context['type'], $context['messages'], $context['_parent'], $context['loop']);
-        $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 19
+        $this->loadTemplate("default/_flash_messages.html.twig", "base.html.twig", 12)->display($context);
+        // line 13
         echo "    ";
         $this->displayBlock('body', $context, $blocks);
-        // line 20
+        // line 14
         echo "</div>
 ";
-        // line 21
+        // line 15
         $this->displayBlock('javascripts', $context, $blocks);
-        // line 26
+        // line 20
         echo "</body>
 </html>";
         
@@ -144,7 +117,7 @@ class __TwigTemplate_22d445499d0318cf21b298e50cb0008136f57c6904e1359547f236d608c
 
     }
 
-    // line 19
+    // line 13
     public function block_body($context, array $blocks = [])
     {
         $__internal_085b0142806202599c7fe3b329164a92397d8978207a37e79d70b8c52599e33e = $this->extensions["Symfony\\Bundle\\WebProfilerBundle\\Twig\\WebProfilerExtension"];
@@ -161,7 +134,7 @@ class __TwigTemplate_22d445499d0318cf21b298e50cb0008136f57c6904e1359547f236d608c
 
     }
 
-    // line 21
+    // line 15
     public function block_javascripts($context, array $blocks = [])
     {
         $__internal_085b0142806202599c7fe3b329164a92397d8978207a37e79d70b8c52599e33e = $this->extensions["Symfony\\Bundle\\WebProfilerBundle\\Twig\\WebProfilerExtension"];
@@ -170,7 +143,7 @@ class __TwigTemplate_22d445499d0318cf21b298e50cb0008136f57c6904e1359547f236d608c
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02 = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
         $__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02->enter($__internal_319393461309892924ff6e74d6d6e64287df64b63545b994e100d4ab223aed02_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "javascripts"));
 
-        // line 22
+        // line 16
         echo "    <script src=\"https://code.jquery.com/jquery-3.3.1.slim.min.js\" integrity=\"sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo\" crossorigin=\"anonymous\"></script>
     <script src=\"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js\" integrity=\"sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49\" crossorigin=\"anonymous\"></script>
     <script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js\" integrity=\"sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy\" crossorigin=\"anonymous\"></script>
@@ -195,7 +168,7 @@ class __TwigTemplate_22d445499d0318cf21b298e50cb0008136f57c6904e1359547f236d608c
 
     public function getDebugInfo()
     {
-        return array (  174 => 22,  165 => 21,  148 => 19,  137 => 7,  128 => 6,  110 => 5,  99 => 26,  97 => 21,  94 => 20,  91 => 19,  85 => 18,  76 => 15,  71 => 14,  66 => 13,  62 => 12,  57 => 9,  55 => 6,  51 => 5,  45 => 1,);
+        return array (  147 => 16,  138 => 15,  121 => 13,  110 => 7,  101 => 6,  83 => 5,  72 => 20,  70 => 15,  67 => 14,  64 => 13,  62 => 12,  57 => 9,  55 => 6,  51 => 5,  45 => 1,);
     }
 
     public function getSourceContext()
@@ -211,13 +184,7 @@ class __TwigTemplate_22d445499d0318cf21b298e50cb0008136f57c6904e1359547f236d608c
 </head>
 <body>
 <div class=\"container-fluid\">
-    {% for type, messages in app.session.flashBag.all %}
-        {% for message in messages %}
-            <div class=\"alert alert-{{ type }}\" role=\"alert\">
-                {{ message|trans }}
-            </div>
-        {% endfor %}
-    {% endfor %}
+    {% include 'default/_flash_messages.html.twig' %}
     {% block body %}{% endblock %}
 </div>
 {% block javascripts %}
