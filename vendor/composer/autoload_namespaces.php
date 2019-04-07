@@ -12,4 +12,5 @@ return array(
     'PHPMD\\' => array($vendorDir . '/phpmd/phpmd/src/main/php'),
     'Knp\\Component' => array($vendorDir . '/knplabs/knp-components/src'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
+    'Behat\\Transliterator' => array($vendorDir . '/behat/transliterator/src'),
 );

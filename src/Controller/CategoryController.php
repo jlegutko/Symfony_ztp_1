@@ -75,12 +75,12 @@ class CategoryController extends AbstractController
      * New action.
      *
      * @param \Symfony\Component\HttpFoundation\Request $request    HTTP request
-     * @param \App\Repository\CategoryRepository        $repository Category repository
-     *
+     * @param  \App\Repository\CategoryRepository $repository Category repository
      * @return \Symfony\Component\HttpFoundation\Response HTTP response
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      *
      * @Route(
      *     "/new",
@@ -95,8 +95,6 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $category->setCreatedAt(new \DateTime());
-            $category->setUpdatedAt(new \DateTime());
             $repository->save($category);
 
             $this->addFlash('success', 'message.created_successfully');
@@ -109,17 +107,19 @@ class CategoryController extends AbstractController
             ['form' => $form->createView()]
         );
     }
+
     /**
      * Edit action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request    HTTP request
-     * @param \App\Entity\Category                      $category   Category entity
-     * @param \App\Repository\CategoryRepository        $repository Category repository
+     * @param \Symfony\Component\HttpFoundation\Request $request HTTP request
+     * @param \App\Entity\Category $category Category entity
+     * @param \App\Repository\CategoryRepository $repository Category repository
      *
      * @return \Symfony\Component\HttpFoundation\Response HTTP response
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      *
      * @Route(
      *     "/{id}/edit",
@@ -134,7 +134,6 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $category->setUpdatedAt(new \DateTime());
             $repository->save($category);
 
             $this->addFlash('success', 'message.updated_successfully');

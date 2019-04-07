@@ -7,6 +7,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Category class.
@@ -42,6 +43,8 @@ class Category
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
+     *
+     * @Gedmo\Timestampable(on="create")
      */
     private $createdAt;
 
@@ -51,13 +54,15 @@ class Category
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
+     *
+     * @Gedmo\Timestampable(on="update")
      */
     private $updatedAt;
 
     /**
      * Title.
      *
-     * @var sring
+     * @var string
      *
      * @ORM\Column(
      *     type="string",
@@ -70,6 +75,20 @@ class Category
      * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="category")
      */
     private $tasks;
+
+    /**
+     * Code.
+     *
+     * @var string
+     *
+     * @ORM\Column(
+     *     type="string",
+     *     length=64
+     * )
+     *
+     * @Gedmo\Slug(fields={"title"})
+     */
+    private $code;
 
     public function __construct()
     {
@@ -179,6 +198,25 @@ class Category
                 $task->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $code
+     * @return Category
+     */
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }
