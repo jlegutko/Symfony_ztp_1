@@ -6,6 +6,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Task class.
@@ -40,6 +41,8 @@ class Task
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
+     *
+     * @Gedmo\Timestampable(on="create")
      */
     private $createdAt;
 
@@ -49,6 +52,8 @@ class Task
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
+     *
+     * @Gedmo\Timestampable(on="update")
      */
     private $updatedAt;
 
@@ -65,7 +70,7 @@ class Task
     private $title;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="tasks")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="tasks", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $category;

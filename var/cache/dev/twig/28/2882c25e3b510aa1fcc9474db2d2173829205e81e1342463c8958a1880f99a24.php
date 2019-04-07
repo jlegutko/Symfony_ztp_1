@@ -125,78 +125,82 @@ class __TwigTemplate_5d2099f6bb735cb814d617b5db3ee07b5fa0c53c4d268ca08c6d5ae19c1
             echo "</th>
             </tr>
             </thead>
-            <tbody>
             ";
-            // line 26
+            // line 25
             $context['_parent'] = $context;
-            $context['_seq'] = twig_ensure_traversable((isset($context["pagination"]) || array_key_exists("pagination", $context) ? $context["pagination"] : (function () { throw new RuntimeError('Variable "pagination" does not exist.', 26, $this->source); })()));
+            $context['_seq'] = twig_ensure_traversable((isset($context["pagination"]) || array_key_exists("pagination", $context) ? $context["pagination"] : (function () { throw new RuntimeError('Variable "pagination" does not exist.', 25, $this->source); })()));
             foreach ($context['_seq'] as $context["_key"] => $context["category"]) {
-                // line 27
+                // line 26
                 echo "                <tr>
                     <td>";
-                // line 28
+                // line 27
                 echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["category"], "id", []), "html", null, true);
                 echo "</td>
                     <td>";
-                // line 29
+                // line 28
                 echo twig_escape_filter($this->env, twig_localized_date_filter($this->env, twig_get_attribute($this->env, $this->source, $context["category"], "createdAt", [])), "html", null, true);
                 echo "</td>
                     <td>";
-                // line 30
+                // line 29
                 echo twig_escape_filter($this->env, twig_localized_date_filter($this->env, twig_get_attribute($this->env, $this->source, $context["category"], "updatedAt", [])), "html", null, true);
                 echo "</td>
                     <td>";
-                // line 31
+                // line 30
                 echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["category"], "title", []), "html", null, true);
                 echo "</td>
                     <td>
                         <a href=\"";
-                // line 33
+                // line 32
                 echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getUrl("category_view", ["id" => twig_get_attribute($this->env, $this->source, $context["category"], "id", [])]), "html", null, true);
                 echo "\" title=\"";
                 echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("action.view"), "html", null, true);
                 echo "\">
                             ";
-                // line 34
+                // line 33
                 echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("action.view"), "html", null, true);
                 echo "
                         </a>
                     </td>
                     <td>
                         <a href=\"";
-                // line 38
+                // line 37
                 echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getUrl("category_edit", ["id" => twig_get_attribute($this->env, $this->source, $context["category"], "id", [])]), "html", null, true);
                 echo "\" title=\"";
                 echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("action.edit"), "html", null, true);
                 echo "\">
                             ";
-                // line 39
+                // line 38
                 echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("action.edit"), "html", null, true);
                 echo "
                         </a>
                     </td>
                     <td>
-                        <a href=\"";
-                // line 43
-                echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getUrl("category_delete", ["id" => twig_get_attribute($this->env, $this->source, $context["category"], "id", [])]), "html", null, true);
-                echo "\" title=\"";
-                echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("action.delete"), "html", null, true);
-                echo "\">
-                            ";
-                // line 44
-                echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("action.delete"), "html", null, true);
-                echo "
-                        </a>
-                    </td>
+                        ";
+                // line 42
+                if ( !twig_length_filter($this->env, twig_get_attribute($this->env, $this->source, $context["category"], "tasks", []))) {
+                    // line 43
+                    echo "                            <a href=\"";
+                    echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getUrl("category_delete", ["id" => twig_get_attribute($this->env, $this->source, $context["category"], "id", [])]), "html", null, true);
+                    echo "\" title=\"";
+                    echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("action.delete"), "html", null, true);
+                    echo "\">
+                                ";
+                    // line 44
+                    echo twig_escape_filter($this->env, $this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("action.delete"), "html", null, true);
+                    echo "
+                            </a>
+                        ";
+                }
+                // line 47
+                echo "                    </td>
                 </tr>
             ";
             }
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['category'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 49
-            echo "            </tbody>
-        </table>
+            // line 50
+            echo "        </table>
         <div class=\"link add-new\">
             <a href=\"";
             // line 52
@@ -251,7 +255,7 @@ class __TwigTemplate_5d2099f6bb735cb814d617b5db3ee07b5fa0c53c4d268ca08c6d5ae19c1
 
     public function getDebugInfo()
     {
-        return array (  232 => 65,  226 => 62,  223 => 61,  216 => 57,  209 => 53,  203 => 52,  198 => 49,  187 => 44,  181 => 43,  174 => 39,  168 => 38,  161 => 34,  155 => 33,  150 => 31,  146 => 30,  142 => 29,  138 => 28,  135 => 27,  131 => 26,  124 => 22,  120 => 21,  116 => 20,  112 => 19,  108 => 18,  99 => 12,  95 => 10,  93 => 9,  88 => 8,  79 => 7,  66 => 4,  57 => 3,  27 => 1,);
+        return array (  236 => 65,  230 => 62,  227 => 61,  220 => 57,  213 => 53,  207 => 52,  203 => 50,  195 => 47,  189 => 44,  182 => 43,  180 => 42,  173 => 38,  167 => 37,  160 => 33,  154 => 32,  149 => 30,  145 => 29,  141 => 28,  137 => 27,  134 => 26,  130 => 25,  124 => 22,  120 => 21,  116 => 20,  112 => 19,  108 => 18,  99 => 12,  95 => 10,  93 => 9,  88 => 8,  79 => 7,  66 => 4,  57 => 3,  27 => 1,);
     }
 
     public function getSourceContext()
@@ -280,7 +284,6 @@ class __TwigTemplate_5d2099f6bb735cb814d617b5db3ee07b5fa0c53c4d268ca08c6d5ae19c1
                 <th>{{ 'label.actions'|trans }}</th>
             </tr>
             </thead>
-            <tbody>
             {% for category in pagination %}
                 <tr>
                     <td>{{ category.id }}</td>
@@ -298,13 +301,14 @@ class __TwigTemplate_5d2099f6bb735cb814d617b5db3ee07b5fa0c53c4d268ca08c6d5ae19c1
                         </a>
                     </td>
                     <td>
-                        <a href=\"{{ url('category_delete', {id: category.id}) }}\" title=\"{{ 'action.delete'|trans }}\">
-                            {{ 'action.delete'|trans }}
-                        </a>
+                        {% if not category.tasks|length %}
+                            <a href=\"{{ url('category_delete', {id: category.id}) }}\" title=\"{{ 'action.delete'|trans }}\">
+                                {{ 'action.delete'|trans }}
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
-            </tbody>
         </table>
         <div class=\"link add-new\">
             <a href=\"{{ url('category_new')}}\" title=\"{{ 'action.new'|trans }}\">

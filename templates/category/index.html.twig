@@ -22,7 +22,6 @@
                 <th>{{ 'label.actions'|trans }}</th>
             </tr>
             </thead>
-            <tbody>
             {% for category in pagination %}
                 <tr>
                     <td>{{ category.id }}</td>
@@ -40,13 +39,14 @@
                         </a>
                     </td>
                     <td>
-                        <a href="{{ url('category_delete', {id: category.id}) }}" title="{{ 'action.delete'|trans }}">
-                            {{ 'action.delete'|trans }}
-                        </a>
+                        {% if not category.tasks|length %}
+                            <a href="{{ url('category_delete', {id: category.id}) }}" title="{{ 'action.delete'|trans }}">
+                                {{ 'action.delete'|trans }}
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
-            </tbody>
         </table>
         <div class="link add-new">
             <a href="{{ url('category_new')}}" title="{{ 'action.new'|trans }}">

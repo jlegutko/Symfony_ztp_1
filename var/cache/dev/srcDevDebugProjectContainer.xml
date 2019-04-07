@@ -108,9 +108,11 @@
     <parameter key="session.save_path">/home/jlegutko/PhpstormProjects/Symfony_ztp/app/var/cache/dev/sessions</parameter>
     <parameter key="session.metadata.update_threshold">0</parameter>
     <parameter key="form.type_extension.csrf.enabled">false</parameter>
-    <parameter key="validator.translation_domain">validators</parameter>
     <parameter key="asset.request_context.base_path"></parameter>
     <parameter key="asset.request_context.secure">false</parameter>
+    <parameter key="validator.mapping.cache.prefix"></parameter>
+    <parameter key="validator.mapping.cache.file">/home/jlegutko/PhpstormProjects/Symfony_ztp/app/var/cache/dev/validation.php</parameter>
+    <parameter key="validator.translation_domain">validators</parameter>
     <parameter key="translator.logging">true</parameter>
     <parameter key="translator.default_path">/home/jlegutko/PhpstormProjects/Symfony_ztp/app/translations</parameter>
     <parameter key="profiler_listener.only_exceptions">false</parameter>
@@ -293,6 +295,10 @@
       <parameter key="data_collector.memory" type="collection">
         <parameter>memory</parameter>
         <parameter>@WebProfiler/Collector/memory.html.twig</parameter>
+      </parameter>
+      <parameter key="data_collector.validator" type="collection">
+        <parameter>validator</parameter>
+        <parameter>@WebProfiler/Collector/validator.html.twig</parameter>
       </parameter>
       <parameter key="data_collector.ajax" type="collection">
         <parameter>ajax</parameter>
@@ -636,12 +642,14 @@
       <argument type="iterator">
         <argument key="session" type="service" id="session" on-invalid="ignore_uninitialized"/>
         <argument key="profiler" type="service" id="profiler" on-invalid="ignore_uninitialized"/>
+        <argument key="debug.validator" type="service" id="debug.validator" on-invalid="ignore_uninitialized"/>
         <argument key="debug.stopwatch" type="service" id="debug.stopwatch" on-invalid="ignore_uninitialized"/>
         <argument key="form.type.entity" type="service" id="form.type.entity" on-invalid="ignore_uninitialized"/>
       </argument>
       <argument type="collection">
         <argument key="session">save</argument>
         <argument key="profiler">reset</argument>
+        <argument key="debug.validator">reset</argument>
         <argument key="debug.stopwatch">reset</argument>
         <argument key="form.type.entity">reset</argument>
       </argument>
@@ -803,12 +811,14 @@
       <argument type="collection">
         <argument>Symfony\Component\Form\Extension\Core\Type\TransformationFailureExtension</argument>
         <argument>Symfony\Component\Form\Extension\HttpFoundation\Type\FormTypeHttpFoundationExtension</argument>
+        <argument>Symfony\Component\Form\Extension\Validator\Type\FormTypeValidatorExtension</argument>
         <argument>Symfony\Component\Form\Extension\Validator\Type\RepeatedTypeValidatorExtension</argument>
         <argument>Symfony\Component\Form\Extension\Validator\Type\SubmitTypeValidatorExtension</argument>
         <argument>Symfony\Component\Form\Extension\Validator\Type\UploadValidatorExtension</argument>
         <argument>Symfony\Component\Form\Extension\DataCollector\Type\DataCollectorTypeExtension</argument>
       </argument>
       <argument type="collection">
+        <argument>Symfony\Component\Form\Extension\Validator\ValidatorTypeGuesser</argument>
         <argument>Symfony\Bridge\Doctrine\Form\DoctrineOrmTypeGuesser</argument>
       </argument>
       <call method="setName">
@@ -1000,6 +1010,7 @@
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.transformation_failure_handling"/>
           <argument type="service" id="form.type_extension.form.http_foundation"/>
+          <argument type="service" id="form.type_extension.form.validator"/>
           <argument type="service" id="form.type_extension.upload.validator"/>
           <argument type="service" id="form.type_extension.form.data_collector"/>
         </argument>
@@ -1011,9 +1022,14 @@
         </argument>
       </argument>
       <argument type="iterator">
+        <argument type="service" id="form.type_guesser.validator"/>
         <argument type="service" id="form.type_guesser.doctrine"/>
       </argument>
       <argument>null</argument>
+    </service>
+    <service id="form.type_guesser.validator" class="Symfony\Component\Form\Extension\Validator\ValidatorTypeGuesser">
+      <tag name="form.type_guesser"/>
+      <argument type="service" id="debug.validator"/>
     </service>
     <service id="form.choice_list_factory.default" class="Symfony\Component\Form\ChoiceList\Factory\DefaultChoiceListFactory" public="false"/>
     <service id="form.choice_list_factory.property_access" class="Symfony\Component\Form\ChoiceList\Factory\PropertyAccessDecorator" public="false">
@@ -1132,6 +1148,10 @@
     <service id="form.server_params" class="Symfony\Component\Form\Util\ServerParams" public="false">
       <argument type="service" id="request_stack"/>
     </service>
+    <service id="form.type_extension.form.validator" class="Symfony\Component\Form\Extension\Validator\Type\FormTypeValidatorExtension">
+      <tag name="form.type_extension" extended_type="Symfony\Component\Form\Extension\Core\Type\FormType" extended-type="Symfony\Component\Form\Extension\Core\Type\FormType"/>
+      <argument type="service" id="debug.validator"/>
+    </service>
     <service id="form.type_extension.repeated.validator" class="Symfony\Component\Form\Extension\Validator\Type\RepeatedTypeValidatorExtension">
       <tag name="form.type_extension" extended_type="Symfony\Component\Form\Extension\Core\Type\RepeatedType" extended-type="Symfony\Component\Form\Extension\Core\Type\RepeatedType"/>
     </service>
@@ -1182,6 +1202,67 @@
       <argument type="service" id="assets.empty_version_strategy"/>
       <argument type="service" id="assets.context"/>
     </service>
+    <service id="2_ApcCache~bnjfy1l" class="Doctrine\Common\Cache\ApcCache" public="false">
+      <call method="setNamespace">
+        <argument></argument>
+      </call>
+    </service>
+    <service id="1_PhpArrayAdapter~bnjfy1l" class="Symfony\Component\Cache\Adapter\PhpArrayAdapter" public="false">
+      <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/var/cache/dev/validation.php</argument>
+      <argument type="service" id="cache.validator"/>
+      <factory class="Symfony\Component\Cache\Adapter\PhpArrayAdapter" method="create"/>
+    </service>
+    <service id="validator.builder" class="Symfony\Component\Validator\ValidatorBuilderInterface">
+      <call method="setConstraintValidatorFactory">
+        <argument type="service" id="validator.validator_factory"/>
+      </call>
+      <call method="setTranslator">
+        <argument type="service" id="translator.data_collector"/>
+      </call>
+      <call method="setTranslationDomain">
+        <argument>validators</argument>
+      </call>
+      <call method="addXmlMappings">
+        <argument type="collection">
+          <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/config/validation.xml</argument>
+        </argument>
+      </call>
+      <call method="enableAnnotationMapping">
+        <argument type="service" id="annotations.cached_reader"/>
+      </call>
+      <call method="addMethodMapping">
+        <argument>loadValidatorMetadata</argument>
+      </call>
+      <call method="addObjectInitializers">
+        <argument type="collection">
+          <argument type="service" id="doctrine.orm.validator_initializer"/>
+        </argument>
+      </call>
+      <factory class="Symfony\Component\Validator\Validation" method="createValidatorBuilder"/>
+    </service>
+    <service id="validator.mapping.cache_warmer" class="Symfony\Bundle\FrameworkBundle\CacheWarmer\ValidatorCacheWarmer" public="false">
+      <tag name="kernel.cache_warmer"/>
+      <argument type="service" id="validator.builder"/>
+      <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/var/cache/dev/validation.php</argument>
+      <argument type="service" id="cache.validator"/>
+    </service>
+    <service id="validator.mapping.cache.symfony" class="Symfony\Component\Validator\Mapping\Cache\Psr6Cache" public="false">
+      <argument type="service" id="1_PhpArrayAdapter~bnjfy1l"/>
+    </service>
+    <service id="validator.mapping.cache.doctrine.apc" class="Symfony\Component\Validator\Mapping\Cache\DoctrineCache" public="false">
+      <argument type="service" id="2_ApcCache~bnjfy1l"/>
+      <deprecated>The "%service_id%" service is deprecated since Symfony 3.4 and will be removed in 4.0. Use a Psr6 cache like "validator.mapping.cache.symfony" instead.</deprecated>
+    </service>
+    <service id="validator.validator_factory" class="Symfony\Component\Validator\ContainerConstraintValidatorFactory" public="false">
+      <argument type="service" id="service_locator.bdkca1v"/>
+    </service>
+    <service id="validator.expression" class="Symfony\Component\Validator\Constraints\ExpressionValidator">
+      <tag name="validator.constraint_validator" alias="validator.expression"/>
+    </service>
+    <service id="validator.email" class="Symfony\Component\Validator\Constraints\EmailValidator">
+      <tag name="validator.constraint_validator" alias="Symfony\Component\Validator\Constraints\EmailValidator"/>
+      <argument>false</argument>
+    </service>
     <service id="translator.default" class="Symfony\Bundle\FrameworkBundle\Translation\Translator">
       <argument type="service" id="service_locator.yepb.pt"/>
       <argument type="service" id="translator.formatter.default"/>
@@ -1227,162 +1308,225 @@
         <argument key="cache_dir">/home/jlegutko/PhpstormProjects/Symfony_ztp/app/var/cache/dev/translations</argument>
         <argument key="debug">true</argument>
         <argument key="resource_files" type="collection">
+          <argument key="af" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.af.xlf</argument>
+          </argument>
           <argument key="ar" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.ar.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.ar.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ar.xliff</argument>
           </argument>
           <argument key="az" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.az.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.az.xlf</argument>
           </argument>
           <argument key="bg" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.bg.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.bg.xlf</argument>
           </argument>
           <argument key="ca" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.ca.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.ca.xlf</argument>
           </argument>
           <argument key="cs" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.cs.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.cs.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.cs.xliff</argument>
           </argument>
+          <argument key="cy" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.cy.xlf</argument>
+          </argument>
           <argument key="da" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.da.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.da.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.da.xliff</argument>
           </argument>
           <argument key="de" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.de.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.de.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.de.xliff</argument>
           </argument>
           <argument key="el" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.el.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.el.xlf</argument>
           </argument>
           <argument key="en" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.en.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.en.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.en.xliff</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/translations/messages.en.xlf</argument>
           </argument>
           <argument key="es" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.es.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.es.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.es.xliff</argument>
           </argument>
           <argument key="et" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.et.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.et.xlf</argument>
           </argument>
           <argument key="eu" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.eu.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.eu.xlf</argument>
           </argument>
           <argument key="fa" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.fa.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.fa.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.fa.xliff</argument>
           </argument>
           <argument key="fi" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.fi.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.fi.xlf</argument>
           </argument>
           <argument key="fr" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.fr.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.fr.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.fr.xliff</argument>
           </argument>
           <argument key="gl" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.gl.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.gl.xlf</argument>
           </argument>
           <argument key="he" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.he.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.he.xlf</argument>
           </argument>
           <argument key="hr" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.hr.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.hr.xlf</argument>
           </argument>
           <argument key="hu" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.hu.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.hu.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.hu.xliff</argument>
           </argument>
           <argument key="hy" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.hy.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.hy.xlf</argument>
           </argument>
           <argument key="id" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.id.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.id.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.id.xliff</argument>
           </argument>
           <argument key="it" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.it.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.it.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.it.xliff</argument>
           </argument>
           <argument key="ja" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.ja.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.ja.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ja.xliff</argument>
           </argument>
           <argument key="lb" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.lb.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.lb.xlf</argument>
           </argument>
           <argument key="lt" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.lt.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.lt.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.lt.xliff</argument>
           </argument>
           <argument key="lv" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.lv.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.lv.xlf</argument>
           </argument>
           <argument key="mn" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.mn.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.mn.xlf</argument>
           </argument>
           <argument key="nb" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.nb.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.nb.xlf</argument>
           </argument>
           <argument key="nl" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.nl.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.nl.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.nl.xliff</argument>
           </argument>
           <argument key="nn" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.nn.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.nn.xlf</argument>
           </argument>
           <argument key="no" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.no.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.no.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.no.xliff</argument>
           </argument>
           <argument key="pl" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.pl.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.pl.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.pl.xliff</argument>
           </argument>
           <argument key="pt" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.pt.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.pt.xlf</argument>
           </argument>
           <argument key="pt_BR" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.pt_BR.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.pt_BR.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.pt_BR.xliff</argument>
           </argument>
           <argument key="ro" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.ro.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.ro.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ro.xliff</argument>
           </argument>
           <argument key="ru" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.ru.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.ru.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ru.xliff</argument>
           </argument>
           <argument key="sk" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.sk.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.sk.xlf</argument>
           </argument>
           <argument key="sl" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.sl.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.sl.xlf</argument>
           </argument>
+          <argument key="sq" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.sq.xlf</argument>
+          </argument>
           <argument key="sr_Cyrl" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.sr_Cyrl.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.sr_Cyrl.xlf</argument>
           </argument>
           <argument key="sr_Latn" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.sr_Latn.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.sr_Latn.xlf</argument>
           </argument>
           <argument key="sv" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.sv.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.sv.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.sv.xliff</argument>
           </argument>
+          <argument key="th" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.th.xlf</argument>
+          </argument>
           <argument key="tl" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.tl.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.tl.xlf</argument>
           </argument>
+          <argument key="tr" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.tr.xlf</argument>
+          </argument>
           <argument key="uk" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.uk.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.uk.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.uk.xliff</argument>
           </argument>
           <argument key="vi" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.vi.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.vi.xlf</argument>
           </argument>
           <argument key="zh_CN" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.zh_CN.xlf</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/form/Resources/translations/validators.zh_CN.xlf</argument>
+          </argument>
+          <argument key="zh_TW" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/symfony/validator/Resources/translations/validators.zh_TW.xlf</argument>
           </argument>
           <argument key="ky" type="collection">
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ky.xliff</argument>
@@ -1672,6 +1816,9 @@
         <argument type="service" id="data_collector.memory"/>
       </call>
       <call method="add">
+        <argument type="service" id="data_collector.validator"/>
+      </call>
+      <call method="add">
         <argument type="service" id="data_collector.ajax"/>
       </call>
       <call method="add">
@@ -1790,6 +1937,14 @@
     <service id="data_collector.form" class="Symfony\Component\Form\Extension\DataCollector\FormDataCollector">
       <tag name="data_collector" template="@WebProfiler/Collector/form.html.twig" id="form" priority="310"/>
       <argument type="service" id="data_collector.form.extractor"/>
+    </service>
+    <service id="debug.validator" class="Symfony\Component\Validator\Validator\TraceableValidator" public="false">
+      <tag name="kernel.reset" method="reset"/>
+      <argument type="service" id="debug.validator.inner"/>
+    </service>
+    <service id="data_collector.validator" class="Symfony\Component\Validator\DataCollector\ValidatorDataCollector" public="false">
+      <tag name="data_collector" template="@WebProfiler/Collector/validator.html.twig" id="validator" priority="320"/>
+      <argument type="service" id="debug.validator"/>
     </service>
     <service id="translator.data_collector" class="Symfony\Component\Translation\DataCollectorTranslator" public="false">
       <argument type="service" id="translator.default"/>
@@ -3630,6 +3785,16 @@
         <argument key="App\Controller\TestController::view" type="service" id="service_locator.fxnbasy"/>
       </argument>
     </service>
+    <service id="service_locator.bdkca1v" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator" type="service" id="doctrine.orm.validator.unique"/>
+        <argument key="Symfony\Component\Validator\Constraints\EmailValidator" type="service" id="validator.email"/>
+        <argument key="Symfony\Component\Validator\Constraints\ExpressionValidator" type="service" id="validator.expression"/>
+        <argument key="doctrine.orm.validator.unique" type="service" id="doctrine.orm.validator.unique"/>
+        <argument key="validator.expression" type="service" id="validator.expression"/>
+      </argument>
+    </service>
     <service id="service_locator.yepb.pt" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -3744,6 +3909,9 @@
       <argument>twig.template_cache_warmer</argument>
       <argument type="service" id="service_container"/>
       <factory service="service_locator.2m3e4be" method="withContext"/>
+    </service>
+    <service id="debug.validator.inner" class="Symfony\Component\Validator\Validator\ValidatorInterface" public="false">
+      <factory service="validator.builder" method="getValidator"/>
     </service>
     <service id="debug.event_dispatcher.inner" class="Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher" public="false">
       <argument type="service" id="service_container"/>
@@ -3973,6 +4141,8 @@
     <service id="form.property_accessor" alias="property_accessor" public="false"/>
     <service id="form.choice_list_factory" alias="form.choice_list_factory.cached" public="false"/>
     <service id="Symfony\Component\Asset\Packages" alias="assets.packages" public="false"/>
+    <service id="Symfony\Component\Validator\Validator\ValidatorInterface" alias="debug.validator" public="false"/>
+    <service id="validator.mapping.class_metadata_factory" alias="debug.validator" public="false"/>
     <service id="translator" alias="translator.data_collector" public="true"/>
     <service id="translator.formatter" alias="translator.formatter.default" public="false"/>
     <service id="cache.default_redis_provider" alias="cache_connection.gd_mszc" public="false"/>
@@ -4009,6 +4179,7 @@
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface" alias="logger" public="false"/>
     <service id="service_locator._fpuy7b" alias="2_ServiceLocator~mjwtg8g" public="false"/>
+    <service id="validator" alias="debug.validator" public="true"/>
     <service id="translator.data_collector.inner" alias="translator.default" public="false"/>
     <service id="event_dispatcher" alias="debug.event_dispatcher" public="true"/>
     <service id="controller_resolver" alias="debug.controller_resolver" public="false"/>

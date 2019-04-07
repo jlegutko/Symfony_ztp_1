@@ -168,8 +168,33 @@ class CategoryController extends AbstractController
      *     name="category_delete",
      * )
      */
+    /**
+     * Delete action.
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request    HTTP request
+     * @param \App\Entity\Category                      $category   Category entity
+     * @param \App\Repository\CategoryRepository        $repository Category repository
+     *
+     * @return \Symfony\Component\HttpFoundation\Response HTTP response
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @Route(
+     *     "/{id}/delete",
+     *     methods={"GET", "DELETE"},
+     *     requirements={"id": "[1-9]\d*"},
+     *     name="category_delete",
+     * )
+     */
     public function delete(Request $request, Category $category, CategoryRepository $repository): Response
     {
+        if ($category->getTasks()->count()) {
+            $this->addFlash('warning', 'message.category_contains_tasks');
+
+            return $this->redirectToRoute('category_index');
+        }
+
         $form = $this->createForm(FormType::class, $category, ['method' => 'DELETE']);
         $form->handleRequest($request);
 

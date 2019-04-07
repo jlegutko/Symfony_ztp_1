@@ -2,18 +2,23 @@
 /**
  * Category entity.
  */
+
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Category class.
  *
  * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
  * @ORM\Table(name="categories")
+ *
+ * @UniqueEntity(fields={"title"})
  */
 class Category
 {
@@ -42,9 +47,11 @@ class Category
      *
      * @var \DateTime
      *
+     * @Gedmo\Timestampable(on="create")
+     *
      * @ORM\Column(type="datetime")
      *
-     * @Gedmo\Timestampable(on="create")
+     * @Assert\DateTime
      */
     private $createdAt;
 
@@ -53,9 +60,11 @@ class Category
      *
      * @var \DateTime
      *
+     * @Gedmo\Timestampable(on="update")
+     *
      * @ORM\Column(type="datetime")
      *
-     * @Gedmo\Timestampable(on="update")
+     * @Assert\DateTime
      */
     private $updatedAt;
 
@@ -68,11 +77,24 @@ class Category
      *     type="string",
      *     length=64
      * )
+     *
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *     min="3",
+     *     max="64",
+     * )
      */
     private $title;
-
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="category")
+     * Tasks.
+     *
+     * @var Collection|null
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="App\Entity\Task",
+     *     mappedBy="category",
+     *     fetch="EXTRA_LAZY"
+     * )
      */
     private $tasks;
 
@@ -87,9 +109,17 @@ class Category
      * )
      *
      * @Gedmo\Slug(fields={"title"})
+     *
+     * @Assert\Length(
+     *     min="3",
+     *     max="64",
+     * )
      */
     private $code;
 
+    /**
+     * Category constructor.
+     */
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
@@ -202,18 +232,11 @@ class Category
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * @param string $code
-     * @return Category
-     */
     public function setCode(string $code): self
     {
         $this->code = $code;
