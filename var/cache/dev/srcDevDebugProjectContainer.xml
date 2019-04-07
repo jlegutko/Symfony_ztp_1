@@ -19,6 +19,7 @@
       <parameter key="DoctrineMigrationsBundle">Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle</parameter>
       <parameter key="MakerBundle">Symfony\Bundle\MakerBundle\MakerBundle</parameter>
       <parameter key="DoctrineFixturesBundle">Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle</parameter>
+      <parameter key="KnpPaginatorBundle">Knp\Bundle\PaginatorBundle\KnpPaginatorBundle</parameter>
     </parameter>
     <parameter key="kernel.bundles_metadata" type="collection">
       <parameter key="FrameworkBundle" type="collection">
@@ -70,6 +71,11 @@
         <parameter key="parent">null</parameter>
         <parameter key="path">/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/doctrine/doctrine-fixtures-bundle</parameter>
         <parameter key="namespace">Doctrine\Bundle\FixturesBundle</parameter>
+      </parameter>
+      <parameter key="KnpPaginatorBundle" type="collection">
+        <parameter key="parent">null</parameter>
+        <parameter key="path">/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle</parameter>
+        <parameter key="namespace">Knp\Bundle\PaginatorBundle</parameter>
       </parameter>
     </parameter>
     <parameter key="kernel.charset">UTF-8</parameter>
@@ -246,6 +252,12 @@
     <parameter key="doctrine_migrations.name">Application Migrations</parameter>
     <parameter key="doctrine_migrations.custom_template">null</parameter>
     <parameter key="doctrine_migrations.organize_migrations">false</parameter>
+    <parameter key="knp_paginator.class">Knp\Component\Pager\Paginator</parameter>
+    <parameter key="knp_paginator.helper.processor.class">Knp\Bundle\PaginatorBundle\Helper\Processor</parameter>
+    <parameter key="knp_paginator.template.pagination">@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig</parameter>
+    <parameter key="knp_paginator.template.filtration">@KnpPaginator/Pagination/filtration.html.twig</parameter>
+    <parameter key="knp_paginator.template.sortable">@KnpPaginator/Pagination/sortable_link.html.twig</parameter>
+    <parameter key="knp_paginator.page_range">3</parameter>
     <parameter key="data_collector.templates" type="collection">
       <parameter key="data_collector.request" type="collection">
         <parameter>request</parameter>
@@ -438,11 +450,25 @@
         <argument>security:check</argument>
       </call>
     </service>
+    <service id="Twig\Extensions\DateExtension" class="Twig\Extensions\DateExtension" public="false" autowire="true" autoconfigure="true">
+      <tag name="twig.extension"/>
+      <argument type="service" id="translator.data_collector"/>
+    </service>
+    <service id="Twig\Extensions\IntlExtension" class="Twig\Extensions\IntlExtension" public="false" autowire="true" autoconfigure="true">
+      <tag name="twig.extension"/>
+    </service>
     <service id="App\Controller\HelloController" class="App\Controller\HelloController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
       <call method="setContainer">
         <argument type="service" id="service_locator.yscbjmj.App\Controller\HelloController"/>
+      </call>
+    </service>
+    <service id="App\Controller\TaskController" class="App\Controller\TaskController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id="service_locator.yscbjmj.App\Controller\TaskController"/>
       </call>
     </service>
     <service id="App\Controller\TestController" class="App\Controller\TestController" public="true" autowire="true" autoconfigure="true">
@@ -455,8 +481,15 @@
     <service id="App\DataFixtures\AppFixtures" class="App\DataFixtures\AppFixtures" public="false" autowire="true" autoconfigure="true">
       <tag name="doctrine.fixture.orm"/>
     </service>
+    <service id="App\DataFixtures\CategoryFixtures" class="App\DataFixtures\CategoryFixtures" public="false" autowire="true" autoconfigure="true">
+      <tag name="doctrine.fixture.orm"/>
+    </service>
     <service id="App\DataFixtures\TaskFixtures" class="App\DataFixtures\TaskFixtures" public="false" autowire="true" autoconfigure="true">
       <tag name="doctrine.fixture.orm"/>
+    </service>
+    <service id="App\Repository\CategoryRepository" class="App\Repository\CategoryRepository" public="false" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
     </service>
     <service id="App\Repository\TaskRepository" class="App\Repository\TaskRepository" public="false" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
@@ -479,7 +512,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-50"/>
-      <argument type="service" id="service_locator.9mahglp"/>
+      <argument type="service" id="service_locator.knfluyi"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-100"/>
@@ -957,8 +990,75 @@
         <argument key="cache_dir">/home/jlegutko/PhpstormProjects/Symfony_ztp/app/var/cache/dev/translations</argument>
         <argument key="debug">true</argument>
         <argument key="resource_files" type="collection">
+          <argument key="ar" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ar.xliff</argument>
+          </argument>
+          <argument key="cs" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.cs.xliff</argument>
+          </argument>
+          <argument key="da" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.da.xliff</argument>
+          </argument>
+          <argument key="de" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.de.xliff</argument>
+          </argument>
           <argument key="en" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.en.xliff</argument>
             <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/translations/messages.en.xlf</argument>
+          </argument>
+          <argument key="es" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.es.xliff</argument>
+          </argument>
+          <argument key="fa" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.fa.xliff</argument>
+          </argument>
+          <argument key="fr" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.fr.xliff</argument>
+          </argument>
+          <argument key="hu" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.hu.xliff</argument>
+          </argument>
+          <argument key="id" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.id.xliff</argument>
+          </argument>
+          <argument key="it" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.it.xliff</argument>
+          </argument>
+          <argument key="ja" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ja.xliff</argument>
+          </argument>
+          <argument key="ky" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ky.xliff</argument>
+          </argument>
+          <argument key="lt" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.lt.xliff</argument>
+          </argument>
+          <argument key="nl" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.nl.xliff</argument>
+          </argument>
+          <argument key="no" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.no.xliff</argument>
+          </argument>
+          <argument key="pl" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.pl.xliff</argument>
+          </argument>
+          <argument key="pt_BR" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.pt_BR.xliff</argument>
+          </argument>
+          <argument key="ro" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ro.xliff</argument>
+          </argument>
+          <argument key="ru" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.ru.xliff</argument>
+          </argument>
+          <argument key="sv" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.sv.xliff</argument>
+          </argument>
+          <argument key="sw" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.sw.xliff</argument>
+          </argument>
+          <argument key="uk" type="collection">
+            <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/translations/KnpPaginatorBundle.uk.xliff</argument>
           </argument>
         </argument>
       </argument>
@@ -1406,6 +1506,14 @@
         <argument>0</argument>
       </call>
       <call method="addListener">
+        <argument>kernel.request</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.sliding_pagination"/>
+          <argument>onKernelRequest</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
         <argument>kernel.response</argument>
         <argument type="collection">
           <argument type="service" id="response_listener"/>
@@ -1684,6 +1792,46 @@
           <argument>onConsoleTerminate</argument>
         </argument>
         <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.before</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.paginate"/>
+          <argument>before</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.pagination</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.paginate"/>
+          <argument>pagination</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.before</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.sortable"/>
+          <argument>before</argument>
+        </argument>
+        <argument>1</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.before</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.filtration"/>
+          <argument>before</argument>
+        </argument>
+        <argument>1</argument>
+      </call>
+      <call method="addListener">
+        <argument>knp_pager.pagination</argument>
+        <argument type="collection">
+          <argument type="service" id="knp_paginator.subscriber.sliding_pagination"/>
+          <argument>pagination</argument>
+        </argument>
+        <argument>1</argument>
       </call>
     </service>
     <service id="debug.controller_resolver" class="Symfony\Component\HttpKernel\Controller\TraceableControllerResolver">
@@ -1996,6 +2144,12 @@
         <argument type="service" id="twig.extension.httpfoundation"/>
       </call>
       <call method="addExtension">
+        <argument type="service" id="Twig\Extensions\DateExtension"/>
+      </call>
+      <call method="addExtension">
+        <argument type="service" id="Twig\Extensions\IntlExtension"/>
+      </call>
+      <call method="addExtension">
         <argument type="service" id="twig.extension.debug"/>
       </call>
       <call method="addExtension">
@@ -2003,6 +2157,9 @@
       </call>
       <call method="addExtension">
         <argument type="service" id="doctrine.twig.doctrine_extension"/>
+      </call>
+      <call method="addExtension">
+        <argument type="service" id="knp_paginator.twig.extension.pagination"/>
       </call>
       <call method="addGlobal">
         <argument>app</argument>
@@ -2078,6 +2235,14 @@
       <call method="addPath">
         <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/doctrine/doctrine-bundle/Resources/views</argument>
         <argument>!Doctrine</argument>
+      </call>
+      <call method="addPath">
+        <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/views</argument>
+        <argument>KnpPaginator</argument>
+      </call>
+      <call method="addPath">
+        <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/vendor/knplabs/knp-paginator-bundle/Resources/views</argument>
+        <argument>!KnpPaginator</argument>
       </call>
       <call method="addPath">
         <argument>/home/jlegutko/PhpstormProjects/Symfony_ztp/app/templates</argument>
@@ -2397,7 +2562,7 @@
       <factory class="Doctrine\ORM\EntityManager" method="create"/>
     </service>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory" public="false">
-      <argument type="service" id="service_locator.z1uw9dp"/>
+      <argument type="service" id="service_locator.yspxcnm"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -2763,24 +2928,82 @@
             <argument key="groups" type="collection"/>
           </argument>
           <argument type="collection">
+            <argument key="fixture" type="service" id="App\DataFixtures\CategoryFixtures"/>
+            <argument key="groups" type="collection"/>
+          </argument>
+          <argument type="collection">
             <argument key="fixture" type="service" id="App\DataFixtures\TaskFixtures"/>
             <argument key="groups" type="collection"/>
           </argument>
         </argument>
       </call>
     </service>
+    <service id="knp_paginator" class="Knp\Component\Pager\Paginator" public="true" lazy="true">
+      <argument type="service" id="debug.event_dispatcher"/>
+      <call method="setDefaultPaginatorOptions">
+        <argument type="collection">
+          <argument key="pageParameterName">page</argument>
+          <argument key="sortFieldParameterName">sort</argument>
+          <argument key="sortDirectionParameterName">direction</argument>
+          <argument key="filterFieldParameterName">filterField</argument>
+          <argument key="filterValueParameterName">filterValue</argument>
+          <argument key="distinct">true</argument>
+        </argument>
+      </call>
+    </service>
+    <service id="knp_paginator.subscriber.paginate" class="Knp\Component\Pager\Event\Subscriber\Paginate\PaginationSubscriber">
+      <tag name="knp_paginator.subscriber"/>
+    </service>
+    <service id="knp_paginator.subscriber.sortable" class="Knp\Component\Pager\Event\Subscriber\Sortable\SortableSubscriber">
+      <tag name="knp_paginator.subscriber"/>
+    </service>
+    <service id="knp_paginator.subscriber.filtration" class="Knp\Component\Pager\Event\Subscriber\Filtration\FiltrationSubscriber">
+      <tag name="knp_paginator.subscriber"/>
+    </service>
+    <service id="knp_paginator.subscriber.sliding_pagination" class="Knp\Bundle\PaginatorBundle\Subscriber\SlidingPaginationSubscriber">
+      <tag name="knp_paginator.subscriber"/>
+      <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest"/>
+      <tag name="container.hot_path"/>
+      <argument type="collection">
+        <argument key="defaultPaginationTemplate">@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig</argument>
+        <argument key="defaultSortableTemplate">@KnpPaginator/Pagination/sortable_link.html.twig</argument>
+        <argument key="defaultFiltrationTemplate">@KnpPaginator/Pagination/filtration.html.twig</argument>
+        <argument key="defaultPageRange">3</argument>
+      </argument>
+    </service>
+    <service id="knp_paginator.helper.processor" class="Knp\Bundle\PaginatorBundle\Helper\Processor">
+      <argument type="service" id="router.default"/>
+      <argument type="service" id="translator.data_collector"/>
+    </service>
+    <service id="knp_paginator.twig.extension.pagination" class="Knp\Bundle\PaginatorBundle\Twig\Extension\PaginationExtension">
+      <tag name="twig.extension"/>
+      <argument type="service" id="knp_paginator.helper.processor"/>
+    </service>
     <service id="instanceof.Symfony\Component\Console\Command\Command.0.SensioLabs\Security\Command\SecurityCheckerCommand" class="SensioLabs\Security\Command\SecurityCheckerCommand" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.SensioLabs\Security\Command\SecurityCheckerCommand" class="SensioLabs\Security\Command\SecurityCheckerCommand" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Twig_ExtensionInterface.0.Twig\Extensions\DateExtension" class="Twig\Extensions\DateExtension" public="false" autowire="true" abstract="true"/>
+    <service id="instanceof.Twig\Extension\ExtensionInterface.0.Twig\Extensions\DateExtension" class="Twig\Extensions\DateExtension" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.Twig\Extensions\DateExtension" class="Twig\Extensions\DateExtension" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Twig_ExtensionInterface.0.Twig\Extensions\IntlExtension" class="Twig\Extensions\IntlExtension" public="false" autowire="true" abstract="true"/>
+    <service id="instanceof.Twig\Extension\ExtensionInterface.0.Twig\Extensions\IntlExtension" class="Twig\Extensions\IntlExtension" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.Twig\Extensions\IntlExtension" class="Twig\Extensions\IntlExtension" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\DependencyInjection\ServiceSubscriberInterface.0.App\Controller\HelloController" class="App\Controller\HelloController" public="false" autowire="true" abstract="true"/>
     <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\HelloController" class="App\Controller\HelloController" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.App\Controller\HelloController" class="App\Controller\HelloController" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Symfony\Component\DependencyInjection\ServiceSubscriberInterface.0.App\Controller\TaskController" class="App\Controller\TaskController" public="false" autowire="true" abstract="true"/>
+    <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\TaskController" class="App\Controller\TaskController" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.App\Controller\TaskController" class="App\Controller\TaskController" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\DependencyInjection\ServiceSubscriberInterface.0.App\Controller\TestController" class="App\Controller\TestController" public="false" autowire="true" abstract="true"/>
     <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\TestController" class="App\Controller\TestController" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.App\Controller\TestController" class="App\Controller\TestController" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Doctrine\Bundle\FixturesBundle\ORMFixtureInterface.0.App\DataFixtures\AppFixtures" class="App\DataFixtures\AppFixtures" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.App\DataFixtures\AppFixtures" class="App\DataFixtures\AppFixtures" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Doctrine\Bundle\FixturesBundle\ORMFixtureInterface.0.App\DataFixtures\CategoryFixtures" class="App\DataFixtures\CategoryFixtures" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.App\DataFixtures\CategoryFixtures" class="App\DataFixtures\CategoryFixtures" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Doctrine\Bundle\FixturesBundle\ORMFixtureInterface.0.App\DataFixtures\TaskFixtures" class="App\DataFixtures\TaskFixtures" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.App\DataFixtures\TaskFixtures" class="App\DataFixtures\TaskFixtures" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\CategoryRepository" class="App\Repository\CategoryRepository" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.App\Repository\CategoryRepository" class="App\Repository\CategoryRepository" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\TaskRepository" class="App\Repository\TaskRepository" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.App\Repository\TaskRepository" class="App\Repository\TaskRepository" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="maker.auto_command.make_auth" class="Symfony\Bundle\MakerBundle\Command\MakerCommand" public="false">
@@ -2945,17 +3168,30 @@
         <argument>make:migration</argument>
       </call>
     </service>
+    <service id="service_locator.ugu6scy" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="paginator" type="service" id="knp_paginator" on-invalid="ignore"/>
+        <argument key="repository" type="service" id="App\Repository\TaskRepository" on-invalid="ignore"/>
+      </argument>
+    </service>
+    <service id="service_locator.gy_zfyn" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection"/>
+    </service>
     <service id="service_locator.fxnbasy" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="repository" type="service" id="App\Repository\TestRepository" on-invalid="ignore"/>
       </argument>
     </service>
-    <service id="service_locator.9mahglp" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.knfluyi" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Controller\TaskController:index" type="service" id="service_locator.ugu6scy"/>
         <argument key="App\Controller\TestController:index" type="service" id="service_locator.fxnbasy"/>
         <argument key="App\Controller\TestController:view" type="service" id="service_locator.fxnbasy"/>
+        <argument key="App\Controller\TaskController::index" type="service" id="service_locator.ugu6scy"/>
         <argument key="App\Controller\TestController::index" type="service" id="service_locator.fxnbasy"/>
         <argument key="App\Controller\TestController::view" type="service" id="service_locator.fxnbasy"/>
       </argument>
@@ -2982,9 +3218,10 @@
         <argument key="inline" type="service" id="fragment.renderer.inline"/>
       </argument>
     </service>
-    <service id="service_locator.z1uw9dp" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.yspxcnm" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Repository\CategoryRepository" type="service" id="App\Repository\CategoryRepository"/>
         <argument key="App\Repository\TaskRepository" type="service" id="App\Repository\TaskRepository"/>
       </argument>
     </service>
@@ -3002,6 +3239,11 @@
     </service>
     <service id="service_locator.yscbjmj.App\Controller\HelloController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <argument>App\Controller\HelloController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service="service_locator.yscbjmj" method="withContext"/>
+    </service>
+    <service id="service_locator.yscbjmj.App\Controller\TaskController" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <argument>App\Controller\TaskController</argument>
       <argument type="service" id="service_container"/>
       <factory service="service_locator.yscbjmj" method="withContext"/>
     </service>
@@ -3304,6 +3546,7 @@
     <service id="doctrine.orm.default_result_cache" alias="doctrine_cache.providers.doctrine.orm.default_result_cache" public="true"/>
     <service id="doctrine.orm.default_query_cache" alias="doctrine_cache.providers.doctrine.orm.default_query_cache" public="true"/>
     <service id="doctrine.orm.default_entity_manager.event_manager" alias="doctrine.dbal.default_connection.event_manager" public="false"/>
+    <service id="Knp\Component\Pager\PaginatorInterface" alias="knp_paginator"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem" public="false"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="Psr\Log\LoggerInterface" alias="logger" public="false"/>
