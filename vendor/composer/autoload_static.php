@@ -10,6 +10,7 @@ class ComposerStaticInite2b85139202863e3e586bd4499f3d429
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '32dcc8afd4335739640db7d200c1971d' => __DIR__ . '/..' . '/symfony/polyfill-apcu/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
+        '6a47392539ca2329373e0d33e1dba053' => __DIR__ . '/..' . '/symfony/polyfill-intl-icu/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
     );
 
@@ -35,10 +36,14 @@ class ComposerStaticInite2b85139202863e3e586bd4499f3d429
             'Symfony\\Component\\Translation\\' => 30,
             'Symfony\\Component\\Stopwatch\\' => 28,
             'Symfony\\Component\\Routing\\' => 26,
+            'Symfony\\Component\\PropertyAccess\\' => 33,
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\OptionsResolver\\' => 34,
+            'Symfony\\Component\\Intl\\' => 23,
+            'Symfony\\Component\\Inflector\\' => 28,
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
+            'Symfony\\Component\\Form\\' => 23,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\EventDispatcher\\' => 34,
@@ -162,6 +167,10 @@ class ComposerStaticInite2b85139202863e3e586bd4499f3d429
         array (
             0 => __DIR__ . '/..' . '/symfony/routing',
         ),
+        'Symfony\\Component\\PropertyAccess\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/property-access',
+        ),
         'Symfony\\Component\\Process\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/process',
@@ -170,6 +179,14 @@ class ComposerStaticInite2b85139202863e3e586bd4499f3d429
         array (
             0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
+        'Symfony\\Component\\Intl\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/intl',
+        ),
+        'Symfony\\Component\\Inflector\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/inflector',
+        ),
         'Symfony\\Component\\HttpKernel\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/http-kernel',
@@ -177,6 +194,10 @@ class ComposerStaticInite2b85139202863e3e586bd4499f3d429
         'Symfony\\Component\\HttpFoundation\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/http-foundation',
+        ),
+        'Symfony\\Component\\Form\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/form',
         ),
         'Symfony\\Component\\Finder\\' => 
         array (
@@ -419,6 +440,10 @@ class ComposerStaticInite2b85139202863e3e586bd4499f3d429
     );
 
     public static $classMap = array (
+        'Collator' => __DIR__ . '/..' . '/symfony/intl/Resources/stubs/Collator.php',
+        'IntlDateFormatter' => __DIR__ . '/..' . '/symfony/intl/Resources/stubs/IntlDateFormatter.php',
+        'Locale' => __DIR__ . '/..' . '/symfony/intl/Resources/stubs/Locale.php',
+        'NumberFormatter' => __DIR__ . '/..' . '/symfony/intl/Resources/stubs/NumberFormatter.php',
         'PhpCsFixer\\Diff\\GeckoPackages\\DiffOutputBuilder\\ConfigurationException' => __DIR__ . '/..' . '/php-cs-fixer/diff/src/GeckoPackages/DiffOutputBuilder/ConfigurationException.php',
         'PhpCsFixer\\Diff\\GeckoPackages\\DiffOutputBuilder\\UnifiedDiffOutputBuilder' => __DIR__ . '/..' . '/php-cs-fixer/diff/src/GeckoPackages/DiffOutputBuilder/UnifiedDiffOutputBuilder.php',
         'PhpCsFixer\\Diff\\v1_4\\Chunk' => __DIR__ . '/..' . '/php-cs-fixer/diff/src/v1_4/Chunk.php',

@@ -107,6 +107,65 @@ class srcDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
 
         }
 
+        elseif (0 === strpos($pathinfo, '/category')) {
+            // category_index
+            if ('/category' === $trimmedPathinfo) {
+                $ret = array (  '_controller' => 'App\\Controller\\CategoryController::index',  '_route' => 'category_index',);
+                if ('/' === substr($pathinfo, -1)) {
+                    // no-op
+                } elseif ('GET' !== $canonicalMethod) {
+                    goto not_category_index;
+                } else {
+                    return array_replace($ret, $this->redirect($rawPathinfo.'/', 'category_index'));
+                }
+
+                return $ret;
+            }
+            not_category_index:
+
+            // category_view
+            if (preg_match('#^/category/(?P<id>[1-9]\\d*)$#sD', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, ['_route' => 'category_view']), array (  '_controller' => 'App\\Controller\\CategoryController::view',));
+            }
+
+            // category_new
+            if ('/category/new' === $pathinfo) {
+                $ret = array (  '_controller' => 'App\\Controller\\CategoryController::new',  '_route' => 'category_new',);
+                if (!in_array($canonicalMethod, ['GET', 'POST'])) {
+                    $allow = array_merge($allow, ['GET', 'POST']);
+                    goto not_category_new;
+                }
+
+                return $ret;
+            }
+            not_category_new:
+
+            // category_edit
+            if (preg_match('#^/category/(?P<id>[1-9]\\d*)/edit$#sD', $pathinfo, $matches)) {
+                $ret = $this->mergeDefaults(array_replace($matches, ['_route' => 'category_edit']), array (  '_controller' => 'App\\Controller\\CategoryController::edit',));
+                if (!in_array($canonicalMethod, ['GET', 'PUT'])) {
+                    $allow = array_merge($allow, ['GET', 'PUT']);
+                    goto not_category_edit;
+                }
+
+                return $ret;
+            }
+            not_category_edit:
+
+            // category_delete
+            if (preg_match('#^/category/(?P<id>[1-9]\\d*)/delete$#sD', $pathinfo, $matches)) {
+                $ret = $this->mergeDefaults(array_replace($matches, ['_route' => 'category_delete']), array (  '_controller' => 'App\\Controller\\CategoryController::delete',));
+                if (!in_array($canonicalMethod, ['GET', 'DELETE'])) {
+                    $allow = array_merge($allow, ['GET', 'DELETE']);
+                    goto not_category_delete;
+                }
+
+                return $ret;
+            }
+            not_category_delete:
+
+        }
+
         // app_hello_index
         if (0 === strpos($pathinfo, '/hello') && preg_match('#^/hello(?:/(?P<name>[a-zA-Z]+))?$#sD', $pathinfo, $matches)) {
             return $this->mergeDefaults(array_replace($matches, ['_route' => 'app_hello_index']), array (  'name' => 'World',  '_controller' => 'App\\Controller\\HelloController::index',));

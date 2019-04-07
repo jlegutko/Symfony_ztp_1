@@ -6,6 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Collator' => $vendorDir . '/symfony/intl/Resources/stubs/Collator.php',
+    'IntlDateFormatter' => $vendorDir . '/symfony/intl/Resources/stubs/IntlDateFormatter.php',
+    'Locale' => $vendorDir . '/symfony/intl/Resources/stubs/Locale.php',
+    'NumberFormatter' => $vendorDir . '/symfony/intl/Resources/stubs/NumberFormatter.php',
     'PhpCsFixer\\Diff\\GeckoPackages\\DiffOutputBuilder\\ConfigurationException' => $vendorDir . '/php-cs-fixer/diff/src/GeckoPackages/DiffOutputBuilder/ConfigurationException.php',
     'PhpCsFixer\\Diff\\GeckoPackages\\DiffOutputBuilder\\UnifiedDiffOutputBuilder' => $vendorDir . '/php-cs-fixer/diff/src/GeckoPackages/DiffOutputBuilder/UnifiedDiffOutputBuilder.php',
     'PhpCsFixer\\Diff\\v1_4\\Chunk' => $vendorDir . '/php-cs-fixer/diff/src/v1_4/Chunk.php',
